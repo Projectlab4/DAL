@@ -1,0 +1,60 @@
+`timescale 1ns / 1ps //#5 means 5 ns
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 09/25/2023 02:21:12 PM
+// Design Name: 
+// Module Name: TOP
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module TOP(
+    input  CLK100MHZ,          // Input clock
+    output reg[15:0]  LED          // Output LED control signal
+    );
+    reg [23:0] counter=0;
+    reg slow_clk = 1'b0;
+    reg [3:0] Led_Counter =4'b0000;
+    
+    always @(posedge CLK100MHZ)
+        if (counter==12_499_999)begin
+            counter<=0;
+            slow_clk =~slow_clk;
+//            LED =16'h0000;
+        end
+       
+        else begin
+            counter = counter+1;
+//            LED =16'hffff;
+        end
+    always @(posedge slow_clk)
+        if (Led_Counter==15) begin
+            Led_Counter<=0;
+        end
+        else begin
+        Led_Counter<= Led_Counter+1;
+        end
+    always @(posedge slow_clk)
+        case (counter)
+        12_499_999:begin
+        LED =16'hFFFF;
+        end
+            0:begin
+            LED =16'h0000;
+            end
+                default: begin
+                end
+                endcase
+endmodule
